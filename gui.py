@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 
 # identification model
 project_dir = os.getcwd()
-identification_model_weights_path = os.path.join(project_dir, 'recognition\\identification\\TSI_weights.h5')
+identification_model_weights_path = os.path.join(project_dir, 'recognition/identification/TSI_model.h5')
 identification_model = load_model(identification_model_weights_path)
 
 # detection model

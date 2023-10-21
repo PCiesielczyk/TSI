@@ -3,16 +3,22 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import neptune
 from PIL import Image
 from keras.layers import Conv2D, MaxPool2D, Dense, Flatten, Dropout
 from keras.models import Sequential
 from keras.utils import to_categorical
+from neptune.integrations.tensorflow_keras import NeptuneCallback
+from neptune.types import File
 from sklearn.metrics import precision_score, recall_score
 from sklearn.model_selection import train_test_split
 
-project_dir = os.path.dirname(os.getcwd())
+module_dir = os.path.dirname(os.getcwd())
+project_dir = os.path.dirname(module_dir)
 dataset_dir = 'archive'
 data_storage_dir = 'data_storage'
+train_dir = os.path.join(project_dir, dataset_dir, 'Train')
+meta_dir = os.path.join(project_dir, dataset_dir, 'Meta')
 
 data_file_path = os.path.join(project_dir, data_storage_dir, 'data.npy')
 labels_file_path = os.path.join(project_dir, data_storage_dir, 'labels.npy')
@@ -25,6 +31,14 @@ print(data.shape, labels.shape)
 # Splitting training and testing dataset
 X_train, X_val, y_train, y_val = train_test_split(data, labels, test_size=0.2, random_state=42)
 print(X_train.shape, X_val.shape, y_train.shape, y_val.shape)
+
+run = neptune.init_run()
+neptune_callback = NeptuneCallback(run=run, log_model_diagram=True)
+run["train_dataset/images"].track_files(f"file://{train_dir}")
+
+for filename in os.listdir(meta_dir):
+    if filename[0].isdigit():
+        run["meta/images"].append(File.as_image(Image.open(os.path.join(meta_dir, filename))))
 
 # Converting the labels into one hot encoding
 y_train = to_categorical(y_train, 43)
@@ -50,7 +64,8 @@ print(model.summary())
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 eps = 15
-history = model.fit(X_train, y_train, batch_size=32, epochs=eps, validation_data=(X_val, y_val))
+history = model.fit(X_train, y_train, batch_size=32, epochs=eps, validation_data=(X_val, y_val),
+                    callbacks=[neptune_callback])
 
 # plotting graphs for accuracy
 plt.figure(figsize=(16, 5))
@@ -71,7 +86,8 @@ plt.legend(['train', 'validation'], loc='upper right')
 
 plt.show()
 
-model.save('TSI_weights.h5')
+model.save('TSI_model.h5')
+run["saved_model"].upload("TSI_model.h5")
 
 test_file = 'Test.csv'
 test_csv_data = pd.read_csv(os.path.join(project_dir, dataset_dir, test_file))
@@ -101,3 +117,5 @@ recall = recall_score(y_true, y_pred_labels, average='macro')
 
 print("Precision:", precision)
 print("Recall:", recall)
+
+run.stop()
