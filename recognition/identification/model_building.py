@@ -12,19 +12,13 @@ from neptune.integrations.tensorflow_keras import NeptuneCallback
 from neptune.types import File
 from sklearn.metrics import precision_score, recall_score
 from sklearn.model_selection import train_test_split
+from data_storage.file_loader import data, labels
 
 module_dir = os.path.dirname(os.getcwd())
 project_dir = os.path.dirname(module_dir)
 dataset_dir = 'archive'
-data_storage_dir = 'data_storage'
 train_dir = os.path.join(project_dir, dataset_dir, 'Train')
 meta_dir = os.path.join(project_dir, dataset_dir, 'Meta')
-
-data_file_path = os.path.join(project_dir, data_storage_dir, 'data.npy')
-labels_file_path = os.path.join(project_dir, data_storage_dir, 'labels.npy')
-
-data = np.load(data_file_path)
-labels = np.load(labels_file_path)
 
 print(data.shape, labels.shape)
 

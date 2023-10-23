@@ -4,12 +4,12 @@ import os
 
 data = []
 labels = []
-classes = 43
 project_dir = os.path.dirname(os.getcwd())
-dataset_dir = "archive"
+train_dir = os.path.join(project_dir, 'archive', 'Train')
+classes = len(os.listdir(train_dir))
 
 for i in range(classes):
-    path = os.path.join(project_dir, dataset_dir, 'Train', str(i))
+    path = os.path.join(train_dir, str(i))
     images = os.listdir(path)
 
     print(f"Processing {i} class")
@@ -20,7 +20,7 @@ for i in range(classes):
         try:
             image = Image.open(image_path)
             print(image_path)
-            image = image.resize((30, 30))
+            image = image.resize((32, 32))
             image = np.array(image)
             data.append(image)
             labels.append(i)
