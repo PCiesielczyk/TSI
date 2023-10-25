@@ -1,4 +1,9 @@
 import numpy as np
+import os
 
-data = np.load('data.npy')
-labels = np.load('labels.npy')
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+X_train = np.load(os.path.join(current_dir, 'X_train.npy'))
+X_val = np.load(os.path.join(current_dir, 'X_val.npy'))
+y_train = np.load(os.path.join(current_dir, 'y_train.npy'))
+y_val = np.load(os.path.join(current_dir, 'y_val.npy'))

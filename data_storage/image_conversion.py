@@ -1,6 +1,7 @@
 import numpy as np
-from PIL import Image
 import os
+from PIL import Image
+from sklearn.model_selection import train_test_split
 
 data = []
 labels = []
@@ -19,7 +20,6 @@ for i in range(classes):
 
         try:
             image = Image.open(image_path)
-            print(image_path)
             image = image.resize((32, 32))
             image = np.array(image)
             data.append(image)
@@ -30,5 +30,9 @@ for i in range(classes):
 data = np.array(data)
 labels = np.array(labels)
 
-np.save('data.npy', data)
-np.save('labels.npy', labels)
+X_train, X_val, y_train, y_val = train_test_split(data, labels, test_size=0.2, random_state=42)
+
+np.save('X_train.npy', X_train)
+np.save('X_val.npy', X_val)
+np.save('y_train.npy', y_train)
+np.save('y_val.npy', y_val)

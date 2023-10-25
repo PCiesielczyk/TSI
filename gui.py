@@ -9,7 +9,7 @@ from PIL import ImageTk, Image, ImageDraw, ImageFont
 from keras.models import load_model
 
 from recognition.detection.detection_model import DetectionModel
-from recognition.identification.ClassMapper import ClassMapper
+from recognition.identification.class_mapper import ClassMapper
 
 logging.basicConfig(level=logging.INFO)
 
