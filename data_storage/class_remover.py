@@ -26,7 +26,7 @@ def rename_meta_images(class_no: int):
 
     dir_list = os.listdir(meta_dir)
     sorted_dir_list = sorted(dir_list, key=lambda d: int(d.split('.')[0]))
-    for file in dir_list:
+    for file in sorted_dir_list:
         file_path = os.path.join(meta_dir, file)
         filename_numeric = file.split('.')[0]
         if os.path.isfile(file_path):

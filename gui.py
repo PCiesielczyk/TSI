@@ -43,7 +43,7 @@ def classify(file_path):
         x2, y2 = traffic_sign.x_max, traffic_sign.y_max
 
         cropped_image = image.crop((x1, y1, x2, y2))
-        cropped_image = cropped_image.resize((30, 30))
+        cropped_image = cropped_image.resize((32, 32))
         cropped_image = np.expand_dims(cropped_image, axis=0)
         cropped_image = np.array(cropped_image)
         pred = identification_model.predict([cropped_image])

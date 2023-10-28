@@ -1,10 +1,11 @@
 import numpy as np
+import cv2
+import logging
 from skimage.transform import rotate
 from skimage.transform import warp
 from skimage.transform import ProjectiveTransform
-import cv2
 
-n_classes = 29
+logging.basicConfig(level=logging.INFO)
 
 
 def rotate_image(image, max_angle=15):
@@ -63,24 +64,24 @@ def transform_image(image, max_angle=15, max_trans=5, max_warp=0.8):
     return (output_image * 255.0).astype(np.uint8)
 
 
-def augment_and_balance_data(X_train, y_train, no_examples_per_class=2000):
+def augment_and_balance_data(X_train_data, y_train_data, no_examples_per_class):
     n_examples = no_examples_per_class
     # Get parameters of data
-    classes, class_indices, class_counts = np.unique(y_train, return_index=True, return_counts=True)
-    height, width, channels = X_train[0].shape
+    classes, class_indices, class_counts = np.unique(y_train_data, return_index=True, return_counts=True)
+    height, width, channels = X_train_data[0].shape
 
     # Create new data and labels for the balanced augmented data
-    X_balance = np.empty([0, X_train.shape[1], X_train.shape[2], X_train.shape[3]], dtype=np.float32)
-    y_balance = np.empty([0], dtype=y_train.dtype)
+    X_balance = np.empty([0, X_train_data.shape[1], X_train_data.shape[2], X_train_data.shape[3]], dtype=np.float32)
+    y_balance = np.empty([0], dtype=y_train_data.dtype)
 
-    for c, count in zip(range(n_classes), class_counts):
+    for c, count in zip(range(len(classes)), class_counts):
         # Copy over the current data for the given class
-        X_orig = X_train[y_train == c]
-        y_orig = y_train[y_train == c]
+        X_orig = X_train_data[y_train_data == c]
+        y_orig = y_train_data[y_train_data == c]
         # Add original data to the new dataset
         X_balance = np.append(X_balance, X_orig, axis=0)
-        print(c, count)
-        temp_X = np.empty([n_examples - count, X_train.shape[1], X_train.shape[2], X_train.shape[3]], dtype=np.float32)
+        logging.info(f'Augmenting {c} class with {n_examples - count} samples')
+        temp_X = np.empty([n_examples - count, X_train_data.shape[1], X_train_data.shape[2], X_train_data.shape[3]], dtype=np.float32)
         for i in range(n_examples - count):
             temp_X[i, :, :, :] = transform_image(X_orig[i % count]).reshape((1, height, width, channels))
 
@@ -88,4 +89,5 @@ def augment_and_balance_data(X_train, y_train, no_examples_per_class=2000):
         n_added_ex = X_balance.shape[0] - y_balance.shape[0]
         y_balance = np.append(y_balance, np.full(n_added_ex, c, dtype=int))
 
+    logging.info(f'Augmented training set X shape: {X_balance.shape}, y shape: {y_balance.shape}')
     return X_balance.astype(np.uint8), y_balance
