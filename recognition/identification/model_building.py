@@ -11,7 +11,7 @@ from keras.models import Sequential
 from keras.utils import to_categorical
 from neptune.integrations.tensorflow_keras import NeptuneCallback
 from neptune.types import File
-from sklearn.metrics import precision_score, recall_score
+from sklearn.metrics import precision_score, recall_score, confusion_matrix
 
 from data_storage.file_loader import X_train_aug, y_train_aug, X_val, y_val
 
@@ -58,8 +58,8 @@ print(model.summary())
 # Compilation of the models
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-eps = 30
-history = model.fit(X_train_aug, y_train, batch_size=128, epochs=eps, validation_data=(X_val, y_val),
+eps = 40
+history = model.fit(X_train_aug, y_train, batch_size=256, epochs=eps, validation_data=(X_val, y_val),
                     callbacks=[neptune_callback])
 
 # plotting graphs for accuracy
@@ -99,8 +99,12 @@ y_test = to_categorical(y_test, class_count)
 
 logging.info(f'Test set X shape: {X_test.shape}, y shape: {y_test.shape}')
 test_loss, test_accuracy = model.evaluate(X_test, y_test)
+
 logging.info(f'Test Loss: {test_loss}')
 logging.info(f'Test Accuracy: {test_accuracy}')
+
+run["test_preds/test_loss"] = str(test_loss)
+run["test_preds/test_accuracy"] = str(test_accuracy)
 
 y_pred = model.predict(X_test)
 y_true = np.argmax(y_test, axis=1)
@@ -111,5 +115,20 @@ recall = recall_score(y_true, y_pred_labels, average='macro')
 
 logging.info(f'Precision: {precision}')
 logging.info(f'Recall: {recall}')
+
+run["test_preds/precision"] = str(precision)
+run["test_preds/recall"] = str(recall)
+
+confusion = confusion_matrix(np.argmax(y_test, axis=1), y_pred_labels)
+
+fig, ax = plt.subplots(figsize=(8, 8))
+
+# Create the heatmap
+heatmap = ax.imshow(confusion, cmap='Blues')
+ax.set_xlabel('Estimated')
+ax.set_ylabel('Ground truth')
+cbar = ax.figure.colorbar(heatmap, ax=ax)
+
+plt.show()
 
 run.stop()
