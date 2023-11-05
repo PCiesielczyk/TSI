@@ -1,22 +1,19 @@
 import logging
-import os
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
 
 import numpy as np
 from PIL import ImageTk, Image, ImageDraw, ImageFont
-from keras.models import load_model
 
 from recognition.detection.detection_model import DetectionModel
 from recognition.identification.class_mapper import ClassMapper
+from recognition.identification.identification_model import IdentificationModel
 
 logging.basicConfig(level=logging.INFO)
 
 # identification model
-project_dir = os.getcwd()
-identification_model_weights_path = os.path.join(project_dir, 'recognition/identification/TSI_model.h5')
-identification_model = load_model(identification_model_weights_path)
+identification_model = IdentificationModel()
 
 # detection model
 detection_model = DetectionModel()
@@ -32,8 +29,8 @@ class_mapper = ClassMapper()
 
 
 def classify(file_path):
-    image = Image.open(file_path)
-    preview_image = Image.open(file_path)
+    image = Image.open(file_path).convert('RGB')
+    preview_image = Image.open(file_path).convert('RGB')
     image_draw = ImageDraw.Draw(preview_image)
     font = ImageFont.truetype("arial.ttf", 34)
     traffic_signs = detection_model.detect_traffic_signs(file_path)
@@ -46,16 +43,13 @@ def classify(file_path):
         cropped_image = cropped_image.resize((32, 32))
         cropped_image = np.expand_dims(cropped_image, axis=0)
         cropped_image = np.array(cropped_image)
-        pred = identification_model.predict([cropped_image])
-        pred_class = np.argmax(pred, axis=1)[0]
-        probability = np.max(pred, axis=1)[0] * 100
-        sign = class_mapper.map_to_text(pred_class + 1)
+        prediction = identification_model.predict([cropped_image])
 
-        output_text = f"{sign} with {probability:.4f}% probability\n"
+        output_text = f"{prediction.sign_name} with {prediction.probability:.4f}% probability\n"
         print(output_text)
 
         image_draw.rectangle((x1, y1, x2, y2), outline=(255, 0, 0), width=2)
-        image_draw.text((x1, y2 + 15), sign, fill="red", font=font)
+        image_draw.text((x1, y2 + 15), prediction.sign_name, fill="red", font=font)
 
     update_preview_image(preview_image)
 
