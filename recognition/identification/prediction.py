@@ -1,8 +1,8 @@
-from class_mapper import ClassMapper
+from TSI.recognition.identification.class_mapper import ClassMapper
 
 
 class Prediction:
-    def __init__(self, class_no, probability):
-        self.class_no = class_no
+    def __init__(self, class_id, probability):
+        self.class_id = class_id
         self.probability = probability
-        self.sign_name = ClassMapper().map_to_text(class_no + 1)
+        self.sign_name = ClassMapper().map_to_text(class_id)
