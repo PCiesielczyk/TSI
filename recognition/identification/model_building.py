@@ -13,7 +13,7 @@ from neptune.integrations.tensorflow_keras import NeptuneCallback
 from neptune.types import File
 from sklearn.metrics import precision_score, recall_score, confusion_matrix
 
-from data_storage.file_loader import X_train_aug, y_train_aug, X_val, y_val
+from TSI.data_storage.file_loader import X_train_aug, y_train_aug, X_val, y_val
 
 logging.basicConfig(level=logging.INFO)
 

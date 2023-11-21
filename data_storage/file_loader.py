@@ -11,6 +11,9 @@ train_dir_path = os.path.join(archive_dir, 'Train')
 X_train_aug_path = os.path.join(current_dir, 'X_train_aug.npy')
 y_train_aug_path = os.path.join(current_dir, 'y_train_aug.npy')
 
+X_train_undersampled_path = os.path.join(current_dir, 'X_train_undersampled.npy')
+y_train_undersampled_path = os.path.join(current_dir, 'y_train_undersampled.npy')
+
 X_train = np.load(os.path.join(current_dir, 'X_train.npy'))
 X_val = np.load(os.path.join(current_dir, 'X_val.npy'))
 y_train = np.load(os.path.join(current_dir, 'y_train.npy'))
@@ -21,3 +24,9 @@ if os.path.exists(X_train_aug_path):
 
 if os.path.exists(y_train_aug_path):
     y_train_aug = np.load(y_train_aug_path)
+
+if os.path.exists(X_train_undersampled_path):
+    X_train_undersampled = np.load(X_train_undersampled_path)
+
+if os.path.exists(y_train_undersampled_path):
+    y_train_undersampled = np.load(y_train_undersampled_path)
