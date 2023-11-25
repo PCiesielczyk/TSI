@@ -60,7 +60,7 @@ print(model.summary())
 # Compilation of the models
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-eps = 40
+eps = 50
 history = model.fit(X_train_aug, y_train, batch_size=256, epochs=eps, validation_data=(X_val, y_val),
                     callbacks=[neptune_callback])
 

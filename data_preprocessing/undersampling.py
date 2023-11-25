@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_dir = os.path.dirname(os.getcwd())
 
-samples_count_threshold = 1200
+samples_count_threshold = 500
 
 unique_train, counts_train = np.unique(y_train, return_counts=True)
 sampling_strategy = {}

@@ -11,13 +11,10 @@ from recognition.identification.identification_model import IdentificationModel
 
 logging.basicConfig(level=logging.INFO)
 
-# identification model
 identification_model = IdentificationModel()
 
-# detection model
-detection_model = DetectionModel()
+detection_model = DetectionModel(confidence_threshold=0.6)
 
-# initialise GUI
 top = tk.Tk()
 top.geometry('1300x900')
 top.title('Traffic sign classification')

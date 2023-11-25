@@ -6,7 +6,7 @@ import numpy as np
 from TSI.data_preprocessing.augment_operations import augment_and_balance_data
 from TSI.data_storage.file_loader import y_train, X_train_undersampled, y_train_undersampled
 
-samples_after_aug = 1200
+samples_after_aug = 500
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_dir = os.path.dirname(os.getcwd())
