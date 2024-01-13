@@ -6,7 +6,7 @@ from TSI.recognition.identification.identification_model import IdentificationMo
 
 logging.basicConfig(level=logging.INFO)
 
-detection_model = DetectionModel(confidence_threshold=0.20)
+detection_model = DetectionModel(confidence_threshold=0.6)
 identification_model = IdentificationModel()
 
 cam_port = 0

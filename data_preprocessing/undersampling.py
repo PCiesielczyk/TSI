@@ -25,26 +25,6 @@ for class_id in unique_train:
         sampling_strategy[class_id] = class_samples_count
     logging.info(f'Setting class {class_id} to {sampling_strategy[class_id]} samples')
 
-
-def update_analyze():
-    csv_path = 'C:\\Users\\piotr\\Desktop\\thesis\\TSI-DCAI\\TSI\\archive\\Test_samples_count.csv'
-    with open(csv_path, 'r') as test_csv:
-        reader = csv.reader(test_csv)
-        rows = list(reader)
-        new_rows = []
-
-        for row in rows:
-            if row[0] != 'ClassId':
-                row.append(new_col_values[int(row[0])])
-                new_rows.append(row)
-
-    with open(csv_path, 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(new_rows)
-
-
-# update_analyze()
-
 rus = RandomUnderSampler(sampling_strategy=sampling_strategy)
 print(X_train.shape, y_train.shape)
 
